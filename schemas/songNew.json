@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://our.company.com/songNew.schema.json",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 50
+    },
+    "artist": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 50
+    },
+    "runtime": {
+      "type": "string",
+      "minimum": 0
+    },
+    "url":{
+      "type": "string"
+    },
+    "playlist_id":{
+      "type": "integer"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "title",
+    "url"
+  ]
+}

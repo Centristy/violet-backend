@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://our.company.com/songGenreNew.schema.json",
+    "type": "object",
+    "properties": {
+        "song_id": {
+        "type": "integer"
+        },
+        "genre_id": {
+        "type": "integer"
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+        "song_id",
+        "genre_id"
+    ]
+}

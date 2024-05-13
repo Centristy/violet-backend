@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://our.company.com/songUpdate.schema.json",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 30
+    },
+    "runtime": {
+      "type": "string",
+      "minimum": 0
+    },
+    "artist": {
+      "type": "string",
+      "minLength": 50
+    },
+    "url":{
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "required": []
+}
