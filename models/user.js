@@ -45,7 +45,7 @@ class User {
       }
     }
 
-    throw new UnauthorizedError("Invalid username/password");
+    throw new UnauthorizedError("Invalid username/password. Note: Username and Password are Case-sensitive");
   }
 
   /** Register user with data.
@@ -118,10 +118,10 @@ class User {
   static async get(username) {
     const userRes = await db.query(
           `SELECT username,
-                  name,
-                  email
-            FROM users
-            WHERE username = $1`,
+          name,
+          email
+        FROM users
+        WHERE username = $1`,
         [username],
     );
 
@@ -129,12 +129,8 @@ class User {
 
     if (!user) throw new NotFoundError(`No user: ${username}`);
 
-    const playlists = await db.query(
-          `SELECT a.id
-            FROM playlists AS a
-            WHERE a.username = $1`, [username]);
+    user.playlists = await db.query(`SELECT * FROM playlists WHERE user_username = $1`, [username]);
 
-    user.playlists = playlists.rows.map(a => a.playist_id);
     return user;
   }
 
@@ -187,7 +183,7 @@ class User {
     let result = await db.query(
           `DELETE
             FROM users
-            WHERE username = $1
+            WHERE username= $1
             RETURNING username`,
         [username],
     );

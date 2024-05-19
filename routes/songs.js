@@ -33,39 +33,33 @@ router.post("/", async function (req, res, next) {
     }
 
     const song = await Song.create(req.body);
+  
     return res.status(201).json({ song });
   } catch (err) {
     return next(err);
   }
 });
 
-/** GET / =>
- *   { songs: [ { id, title, artist, runtime, url, playlist }, ...] }
+/** Search / { songs } => { by parameters }
  *
- * Can provide search filter in query:
- * - title (will find case-insensitive, partial matches)
- * - id
-
- * Authorization required: none
+ * Song should be { title, artist, runtime }
+ *
+ * Returns { id, title, artist, runtime }
+ *
+ * Authorization required: admin
  */
 
-router.get("/", async function (req, res, next) {
-  const q = req.query;
-  // arrive as strings from querystring, but we want as int/bool
-
-  try {
-    const validator = jsonschema.validate(q, songSearchSchema);
-    if (!validator.valid) {
-      const errs = validator.errors.map(e => e.stack);
-      throw new BadRequestError(errs);
-    }
-
-    const songs = await Song.findAll(q);
-    return res.json({ songs });
+router.get("/search/:q", async function (req, res, next) {
+try{
+    const songs = await Song.search(req.params.q);
+    return res.status(201).json({ songs });
   } catch (err) {
     return next(err);
   }
 });
+
+
+
 
 /** GET /[songId] => { song }
  *
@@ -122,4 +116,8 @@ router.delete("/:id", async function (req, res, next) {
 });
 
 
+
 module.exports = router;
+
+
+

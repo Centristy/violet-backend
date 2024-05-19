@@ -15,16 +15,17 @@ class Playlist {
    * Throws BadRequestError if playlist already in database.
    * */
 
-  static async create({ title, user_username }) {
+  static async create({ title, user_username, description }) {
 
     const result = await db.query(
           `INSERT INTO playlists
-           (title, user_username)
-           VALUES ($1, $2)
+           (title, user_username, description)
+           VALUES ($1, $2, $3)
            RETURNING id, title`,
         [
           title,
           user_username,
+          description,
         ],
     );
     const playlist = result.rows[0];
@@ -42,35 +43,9 @@ class Playlist {
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 
-  static async findAllPlaylists(searchFilters = {}) {
-    let query = `SELECT id,
-                        title
-                  FROM playlists`;
-    let whereExpressions = [];
-    let queryValues = [];
+  static async findAllPlaylists(user_username) {
 
-    const { user_username , title } = searchFilters;
-
-
-
-    if (user_username) {
-      queryValues.push(`%${user_username}%`);
-      whereExpressions.push(`user_username = $${queryValues.length}`);
-    }
-    
-    if (title) {
-      queryValues.push(`%${title}%`);
-      whereExpressions.push(`title ILIKE $${queryValues.length}`);
-    }
-
-    if (whereExpressions.length > 0) {
-      query += " WHERE " + whereExpressions.join(" AND ");
-    }
-
-    // Finalize query and return results
-
-    query += " ORDER BY title";
-    const playlistsRes = await db.query(query, queryValues);
+    const playlistsRes = await db.query(`SELECT * FROM playlists WHERE user_username = $1`, [user_username]);
     return playlistsRes.rows;
   }
 
@@ -84,8 +59,7 @@ class Playlist {
 
   static async get(id) {
     const playlists = await db.query(
-          `SELECT id,
-                  title
+          `SELECT *
           FROM playlists
           WHERE id = $1`,
         [id]);
@@ -107,10 +81,15 @@ class Playlist {
     let allSongs = await db.query( 
                         `SELECT s.id,
                         s.title,
-                        s.playlist_id
+                        s.artist,
+                        s.album,
+                        s.playlist_id,
+                        s.url
                   FROM songs s WHERE playlist_id = $1`, [playlist_id]) ;
 
-    return allSongs.rows[0];
+    console.log(allSongs)
+
+    return allSongs;
   }
 
   /** Update playlist data with `data`.
@@ -144,7 +123,7 @@ class Playlist {
    **/
 
   static async remove(id) {
-    const songdel = await db.query(
+    const songdelete = await db.query(
         `DELETE
           FROM songs
           WHERE playlist_id = $1`,
@@ -153,14 +132,14 @@ class Playlist {
     const result = await db.query(
           `DELETE
             FROM playlists
-            WHERE id = $1
-            RETURNING id`,
+            WHERE id = $1 RETURNING
+            title`,
         [id]);
 
 
     if (!result) throw new NotFoundError(`Playlist does not exist \ Deleted by user`);
   
-    return result
+    return result.rows[0]
   
   };
 

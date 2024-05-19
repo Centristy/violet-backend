@@ -8,6 +8,10 @@
       "minLength": 1,
       "maxLength": 20
     },
+    "description": {
+      "type": "string"
+    },
+
     "user_username": {
       "type": "string"
     }

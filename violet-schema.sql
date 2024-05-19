@@ -9,6 +9,7 @@ CREATE TABLE users (
 CREATE TABLE playlists (
   id SERIAL PRIMARY KEY,
   title VARCHAR(20) NOT NULL,
+  description TEXT,
   user_username VARCHAR(20) NOT NULL REFERENCES users(username)
 
 );
@@ -18,7 +19,7 @@ CREATE TABLE songs (
 
   id SERIAL PRIMARY KEY,
   artist VARCHAR(50),
-  runtime TIME,
+  album TEXT,
   title VARCHAR(50) NOT NULL,
   playlist_id INT NOT NULL REFERENCES playlists(id),
   url TEXT NOT NULL

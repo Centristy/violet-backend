@@ -11,6 +11,7 @@ const User = require("../models/user");
 const { createToken } = require("../helpers/tokens");
 const userNewSchema = require("../schemas/userNew.json");
 const userUpdateSchema = require("../schemas/userUpdate.json");
+const Playlist = require("../models/playlist");
 
 const router = express.Router();
 
@@ -47,15 +48,19 @@ router.post("/", async function (req, res, next) {
 
 /** GET /[username] => { user }
  *
- * Returns { username, firstName, lastName, isAdmin, jobs }
- *   where jobs is { id, title, companyHandle, companyName, state }
+ * Returns { username, name }
+ *  
  *
- * Authorization required: admin or same user-as-:username
+ * Authorization required:
  **/
 
-router.get("/:username", ensureCorrectUser, async function (req, res, next) {
+router.get("/:username", async function (req, res, next) {
   try {
     const user = await User.get(req.params.username);
+
+    let user_username = req.params.username
+
+    user.playlists = await Playlist.findAllPlaylists(user_username=user_username)
     return res.json({ user });
   } catch (err) {
     return next(err);

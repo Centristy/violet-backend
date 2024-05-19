@@ -72,7 +72,7 @@ router.get("/", async function (req, res, next) {
 /** GET /:id  =>  { playlist }
  *
  *  playlist is { id }
- *   where jobs is [{ id, title, salary, equity }, ...]
+ *   where songs is [{ id, title, aritst, runtime}, ...]
  *
  * Authorization required: none
  */
@@ -80,20 +80,14 @@ router.get("/", async function (req, res, next) {
 router.get("/:id", async function (req, res, next) {
   try {
     const playlist = await Playlist.get(req.params.id);
+    playlist.songs = await Playlist.findAllsongs(req.params.id);
+    console.log(playlist)
     return res.json( playlist );
   } catch (err) {
     return next(err);
   }
 });
 
-router.get("/:id/songs", async function (req, res, next) {
-  try {
-    const songs = await Playlist.findAllsongs(req.params.id);
-    return res.json( songs );
-  } catch (err) {
-    return next(err);
-  }
-});
 
 /** PATCH /[handle] { fld1, fld2, ... } => { playlist }
  *
@@ -121,14 +115,14 @@ router.patch("/:id", async function (req, res, next) {
 });
 
 
-/** DELETE /[handle]  =>  { deleted: handle }
+/** DELETE /[id]  =>  { deleted: handle }
  *
  */
 
 router.delete("/:id", async function (req, res, next) {
   try {
-    await Playlist.remove(req.params.handle);
-    return res.json({ deleted: req.params.handle });
+    const result = await Playlist.remove(req.params.id);
+    return res.json(result);
   } catch (err) {
     return next(err);
   }
