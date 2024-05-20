@@ -72,7 +72,7 @@ router.get("/", async function (req, res, next) {
 /** GET /:id  =>  { playlist }
  *
  *  playlist is { id }
- *   where songs is [{ id, title, aritst, runtime}, ...]
+ *   where songs is [{ id, title, aritst, album}, ...]
  *
  * Authorization required: none
  */
@@ -107,7 +107,7 @@ router.patch("/:id", async function (req, res, next) {
       throw new BadRequestError(errs);
     }
 
-    const playlist = await Playlist.update(req.params.handle, req.body);
+    const playlist = await Playlist.update(req.params.id, req.body);
     return res.json({ playlist });
   } catch (err) {
     return next(err);

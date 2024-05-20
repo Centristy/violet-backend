@@ -3,6 +3,8 @@
 const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
 
+const { sqlForPartialUpdate } = require("../helpers/sql");
+
 /** Related functions for playlists. */
 
 class Playlist {
@@ -95,25 +97,35 @@ class Playlist {
   /** Update playlist data with `data`.
    *
 
-   * Data must include: {title}
+   * Data must include: {title or description}
    *
-   * Returns {id, title }
+   * Returns {id, title, description }
    *
    * Throws NotFoundError if not found.
    */
 
-  static async update(id, title) {
+  static async update(id, data) {
+
+
+    const { setCols, values } = sqlForPartialUpdate(
+        data,
+        {});
+
+    const idVarIdx = "$" + (values.length + 1);
 
     const querySql = `UPDATE playlists 
-                      SET title 
-                      WHERE id = ${id} 
-                      RETURNING id, 
-                                title`;
-    const result = await db.query(querySql, [title]);
+                      SET ${setCols} 
+                      WHERE id = ${idVarIdx} 
+                      RETURNING id,
+                                title,
+                                description
+                                `;
+    const result = await db.query(querySql, [...values, id]);
     const playlist = result.rows[0];
 
-    if (!playlist) throw new NotFoundError(`Playlist does not exist, or wad dleted by user`);
+    if (!playlist) throw new NotFoundError(`No: ${id}`);
 
+    
     return playlist;
   }
 

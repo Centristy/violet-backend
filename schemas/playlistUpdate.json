@@ -9,8 +9,7 @@
       "maxLength": 20
     },
     "description": {
-      "type": "string",
-      "maxLength": 20
+      "type": "string"
     }
   },
   "additionalProperties": false,

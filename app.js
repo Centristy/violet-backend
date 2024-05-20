@@ -12,8 +12,8 @@ const authRoutes = require("./routes/auth");
 const playlistsRoutes = require("./routes/playlists");
 const usersRoutes = require("./routes/users");
 const songsRoutes = require("./routes/songs");
-const genreRoutes = require("./routes/genres")
 const convertRoutes = require("./routes/convert")
+const exploreRoutes = require("./routes/explore")
 
 const morgan = require("morgan");
 
@@ -28,8 +28,8 @@ app.use("/auth", authRoutes);
 app.use("/playlists", playlistsRoutes);
 app.use("/users", usersRoutes);
 app.use("/songs", songsRoutes);
-app.use("/genres", genreRoutes);
 app.use("/convert", convertRoutes);
+app.use("/explore/", exploreRoutes)
 
 
 /** Handle 404 errors -- this matches everything */
