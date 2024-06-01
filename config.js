@@ -5,14 +5,14 @@
 require("dotenv").config();
 require("colors");
 
-const SECRET_KEY = process.env.SECRET_KEY || "abc123";
+const SECRET_KEY = process.env.SECRET_KEY || "secret-dev";
 const PORT = +process.env.PORT || 10000;
 
 // Use dev database, testing database, or via env var, production database
 function getDatabaseUri() {
   return (process.env.NODE_ENV === "test")
       ? "postgresql:///violet_test"
-      : process.env.DATABASE_URL || "postgres://efxzihqt:o0MFwGJUfCzuMNfAXduywztKL1YNTaf5@kala.db.elephantsql.com/efxzihqt";
+      : process.env.DATABASE_URL || "postgresql:///violet";
 }
 
 // Speed up bcrypt during tests, since the algorithm safety isn't being tested
